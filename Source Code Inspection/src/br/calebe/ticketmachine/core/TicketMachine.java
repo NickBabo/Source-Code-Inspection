@@ -21,15 +21,15 @@ public class TicketMachine {
 
     public void inserir(int quantia) throws PapelMoedaInvalidaException {
         boolean achou = false;
-        for (int i = 0; i < papelMoeda.length && !achou; i++) {
-            if (papelMoeda[1] == quantia) {
+        for (int i = 0; i < papelMoeda.length; i++) {
+            if (papelMoeda[i] == quantia) { // trocado a condicional de papelMoeda[1] por papelMoeda[i]
                 achou = true;
+                this.saldo += quantia; // movido da linha 33 para dentro da condicional
             }
         }
         if (!achou) {
             throw new PapelMoedaInvalidaException();
         }
-        this.saldo += quantia;
     }
 
     public int getSaldo() {
@@ -37,7 +37,7 @@ public class TicketMachine {
     }
 
     public Iterator<Integer> getTroco() {
-        return null;
+        return this.saldo; //retorna o saldo restante na maquina como troco
     }
 
     public String imprimir() throws SaldoInsuficienteException {
@@ -48,5 +48,6 @@ public class TicketMachine {
         result += "*** R$ " + saldo + ",00 ****\n";
         result += "*****************\n";
         return result;
+        this.saldo=0; // adicionado a função de zerar o saldo ao término da impressão
     }
 }
