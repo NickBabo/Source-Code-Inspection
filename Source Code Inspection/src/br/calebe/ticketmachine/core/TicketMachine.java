@@ -10,44 +10,44 @@ import java.util.Iterator;
  */
 public class TicketMachine {
 
-    protected int valor;
-    protected int saldo;
-    protected int[] papelMoeda = {2, 5, 10, 20, 50, 100};
+    private final int valor;
+    private int saldo;
+    private final int[] papelMoeda = {2, 5, 10, 20, 50, 100};
 
-    public TicketMachine(int valor) {
-        this.valor = valor;
+    public TicketMachine(int precoDoBilhete) {
+        this.valor = precoDoBilhete;
         this.saldo = 0;
     }
 
     public void inserir(int quantia) throws PapelMoedaInvalidaException {
         boolean achou = false;
-        for (int i = 0; i < papelMoeda.length; i++) {
-            if (papelMoeda[i] == quantia) { // trocado a condicional de papelMoeda[1] por papelMoeda[i]
+        for (int i = 0; i < papelMoeda.length && !achou; i++) {
+            if (papelMoeda[i] == quantia) {
                 achou = true;
-                this.saldo += quantia; // movido da linha 33 para dentro da condicional
             }
         }
         if (!achou) {
             throw new PapelMoedaInvalidaException();
         }
+        this.saldo += quantia;
     }
 
     public int getSaldo() {
         return saldo;
     }
 
-    public Iterator<Integer> getTroco() {
-        return this.saldo; //retorna o saldo restante na maquina como troco
+    public Iterator<PapelMoeda> getTroco() {
+        Troco troco = new Troco(saldo);
+        return troco.getIterator();
     }
 
     public String imprimir() throws SaldoInsuficienteException {
         if (saldo < valor) {
             throw new SaldoInsuficienteException();
         }
-        String result = "*****************\n";
-        result += "*** R$ " + saldo + ",00 ****\n";
-        result += "*****************\n";
+        saldo -= valor;
+        String result = "PreÃ§o do ticket comprado: R$ " + valor + ",00\n";
+        result += "Saldo apÃ³s a compra: R$ "  + saldo + ",00\n";
         return result;
-        this.saldo=0; // adicionado a função de zerar o saldo ao término da impressão
     }
 }
